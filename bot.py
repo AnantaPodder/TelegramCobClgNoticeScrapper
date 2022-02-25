@@ -16,11 +16,10 @@ while True:
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     driver = webdriver.Chrome(
-        executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options
+        executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+        chrome_options=chrome_options,
     )
     #### for heroku ###
-
-
 
     driver = webdriver.Chrome("./chromedriver")
 
@@ -28,10 +27,9 @@ while True:
     driver.set_page_load_timeout(20)
 
     driver.get("http://coochbeharcollege.org.in/notice.aspx")
-    x = driver.page_source   #page source code to process.
+    x = driver.page_source  # page source code to process.
 
-    dbData = getter()  #get data from database
-
+    dbData = getter()  # get data from database
 
     x = x[x.find("<table>") : x.find("</table>")]  # get full table
     temp = ""
@@ -52,7 +50,9 @@ while True:
                 driver.find_element(By.ID, temp).click()
                 # time.sleep(2)
                 ele = driver.find_element_by_class_name("bd").get_attribute("outerHTML")
-                url_base_index = ele.index('onclick="JavaScript:view(this.title)" title="')
+                url_base_index = ele.index(
+                    'onclick="JavaScript:view(this.title)" title="'
+                )
                 url_end_index = ele.index(">View</a>")
 
                 title = ele[url_base_index + 45 : url_end_index - 1]
@@ -84,8 +84,6 @@ while True:
             else:
                 continue
 
-
+    print("I'm alive!")
     driver.quit()
     time.sleep(50)
-
-
