@@ -5,9 +5,11 @@ import time
 import requests
 from config import telegram_bot_api
 
+
+
+
 ### for heroku ###
 import os
-
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
@@ -16,24 +18,19 @@ chrome_options.add_argument("--no-sandbox")
 driver = webdriver.Chrome(
     executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options
 )
-
 #### for heroku ###
+
+
+
 driver = webdriver.Chrome("./chromedriver")
 
 driver.implicitly_wait(5)
 driver.set_page_load_timeout(20)
 
 driver.get("http://coochbeharcollege.org.in/notice.aspx")
-x = driver.page_source
-# pageSource = driver.page_source
-# fileToWrite = open("page_source.html", "w")
-# fileToWrite.write(pageSource)
-# fileToWrite.close()
-# fileToRead = open("page_source.html", "r")
-# x = fileToRead.read()
-# fileToRead.close()
+x = driver.page_source   #page source code to process.
 
-dbData = getter()
+dbData = getter()  #get data from database
 
 
 x = x[x.find("<table>") : x.find("</table>")]  # get full table
@@ -73,13 +70,13 @@ for i in range(len(x)):
             driver.refresh()
             print(k, ": ", title)
             k += 1
-            url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id=@testananta&caption={capt}&document={title}"
+            url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id=-1001381972668&caption={capt}&document={title}"
             time.sleep(1)
             response = requests.get(url)
             if response.status_code == 400:
                 txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: https://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
                 requests.get(
-                    f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id=@testananta&text={txt}"
+                    f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id=-1001381972668&text={txt}"
                 )
 
             # insert into database
