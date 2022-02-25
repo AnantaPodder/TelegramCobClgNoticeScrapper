@@ -7,7 +7,7 @@ from config import telegram_bot_api
 import os
 
 while True:
-
+    print(time.time())
     ### for heroku ###
 
     chrome_options = webdriver.ChromeOptions()
@@ -92,5 +92,6 @@ while True:
     x = ""
     driver.quit()
     time.sleep(5)
+    print(time.time())
 
 print("Exiting")
