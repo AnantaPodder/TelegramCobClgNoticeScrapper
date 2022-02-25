@@ -22,10 +22,10 @@ def getter():
 
 def setter(id):
     connection = pymysql.connect(
-        host="sql348.main-hosting.eu",
-        user="u841345258_anantapodder",
-        password="Ananta08@@",
-        database="u841345258_cobClgNotice",
+        host=host,
+        user=user,
+        password=password,
+        database=database,
     )
 
     with connection.cursor() as cursor:
