@@ -74,6 +74,7 @@ while True:
                 print(k, ": ", title)
                 k += 1
                 url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id={chat_id}&caption={capt}&document={title}"
+                print(url)
                 time.sleep(1)
                 response = requests.get(url)
                 if response.status_code == 400:
