@@ -88,3 +88,5 @@ while True:
     x = ""
     driver.quit()
     time.sleep(5)
+
+print("Exiting")
