@@ -67,9 +67,9 @@ while True:
 
                 # print(title)
                 # time.sleep(1)
-                https://t.me/testananta
+                # https://t.me/testananta
                 # chat_id=-1001381972668
-                chat_id="@testananta"
+                chat_id = "@testananta"
                 driver.refresh()
                 print(k, ": ", title)
                 k += 1
