@@ -67,16 +67,19 @@ while True:
 
                 # print(title)
                 # time.sleep(1)
+                https://t.me/testananta
+                # chat_id=-1001381972668
+                chat_id="@testananta"
                 driver.refresh()
                 print(k, ": ", title)
                 k += 1
-                url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id=-1001381972668&caption={capt}&document={title}"
+                url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id={chat_id}&caption={capt}&document={title}"
                 time.sleep(1)
                 response = requests.get(url)
                 if response.status_code == 400:
                     txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: https://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
                     requests.get(
-                        f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id=-1001381972668&text={txt}"
+                        f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
                     )
 
                 # insert into database
