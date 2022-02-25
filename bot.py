@@ -3,21 +3,22 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 import requests
+from config import telegram_bot_api
 
 driver = webdriver.Chrome("./chromedriver")
-
 
 driver.implicitly_wait(5)
 driver.set_page_load_timeout(20)
 
 driver.get("http://coochbeharcollege.org.in/notice.aspx")
-pageSource = driver.page_source
-fileToWrite = open("page_source.html", "w")
-fileToWrite.write(pageSource)
-fileToWrite.close()
-fileToRead = open("page_source.html", "r")
-x = fileToRead.read()
-fileToRead.close()
+x = driver.page_source
+# pageSource = driver.page_source
+# fileToWrite = open("page_source.html", "w")
+# fileToWrite.write(pageSource)
+# fileToWrite.close()
+# fileToRead = open("page_source.html", "r")
+# x = fileToRead.read()
+# fileToRead.close()
 
 dbData = getter()
 
@@ -59,16 +60,13 @@ for i in range(len(x)):
             driver.refresh()
             print(k, ": ", title)
             k += 1
-            url = f"https://api.telegram.org/bot5230528864:AAE0oT9CEjczbzSj4MGugvmmZzKEl5mXXGQ/sendDocument?chat_id=@testananta&caption={capt}&document={title}"
+            url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id=@testananta&caption={capt}&document={title}"
             time.sleep(1)
             response = requests.get(url)
             if response.status_code == 400:
-                # requests.get(
-                #     "https://api.telegram.org/bot5230528864:AAE0oT9CEjczbzSj4MGugvmmZzKEl5mXXGQ/sendMessage?chat_id=@testananta&text=test"
-                # )
                 txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: https://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
                 requests.get(
-                    f"https://api.telegram.org/bot5230528864:AAE0oT9CEjczbzSj4MGugvmmZzKEl5mXXGQ/sendMessage?chat_id=@testananta&text={txt}"
+                    f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id=@testananta&text={txt}"
                 )
 
             # insert into database
