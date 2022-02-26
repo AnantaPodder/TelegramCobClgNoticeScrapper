@@ -17,26 +17,26 @@ while True:
     ### for heroku ###
 
     # are you alive functionality.
+    alive_function_update_url = (
+        f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
+    )
+    alive_response = requests.get(alive_function_update_url).json()
 
-    try:
-        alive_function_update_url = (
-            f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-        )
-        alive_response = requests.get(alive_function_update_url).json()
-        update_id = alive_response["result"][len(alive_response["result"]) - 1][
-            "update_id"
-        ]
-        message_id = alive_response["result"][len(alive_response["result"]) - 1][
-            "message"
-        ]["message_id"]
-        conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
-            "message"
-        ]["text"]
-        mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
-            "message"
-        ]["entities"][0]["type"]
+    update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
+    if update_id > json_message_update_id:
 
-        if update_id > json_message_update_id:
+        try:
+
+            message_id = alive_response["result"][len(alive_response["result"]) - 1][
+                "message"
+            ]["message_id"]
+            conversation_text = alive_response["result"][
+                len(alive_response["result"]) - 1
+            ]["message"]["text"]
+            mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
+                "message"
+            ]["entities"][0]["type"]
+
             json_message_update_id = update_id
             if ("alive" in conversation_text or "working" in conversation_text) and (
                 mentioned_me == "mention"
@@ -46,11 +46,11 @@ while True:
                 requests.get(
                     f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
                 )
-    except:
-        # print("not mentioned")
-        continue
-    finally:
-        print("working")
+        except:
+            # print("not mentioned")
+            continue
+        finally:
+            # print("working")
 
     # if update_id > json_message_update_id:
     #     json_message_update_id = update_id
