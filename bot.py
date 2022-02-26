@@ -6,6 +6,8 @@ import requests
 from config import telegram_bot_api
 import os
 
+chat_id = -1001381972668
+
 dyno_usage_reset()
 while True:
     init_time = time.time()
@@ -69,7 +71,7 @@ while True:
                 # print(title)
                 # time.sleep(1)
 
-                chat_id = -1001381972668
+                
 
                 driver.refresh()
                 print(k, ": ", title)
