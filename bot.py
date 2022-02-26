@@ -17,12 +17,12 @@ while True:
     ### for heroku ###
 
     # are you alive functionality.
-    alive_function_update_url = (
-        f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-    )
-    alive_response = requests.get(alive_function_update_url).json()
 
     try:
+        alive_function_update_url = (
+            f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
+        )
+        alive_response = requests.get(alive_function_update_url).json()
         update_id = alive_response["result"][len(alive_response["result"]) - 1][
             "update_id"
         ]
@@ -49,6 +49,8 @@ while True:
     except:
         # print("not mentioned")
         continue
+    finally:
+        print("working")
 
     # if update_id > json_message_update_id:
     #     json_message_update_id = update_id
