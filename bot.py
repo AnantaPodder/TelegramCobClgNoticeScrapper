@@ -46,12 +46,11 @@ while True:
                 requests.get(
                     f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
                 )
+
         except:
-            # print("not mentioned")
-            continue
-        finally:
-            continue
-            # print("working")
+            print("not mentioned")
+
+    # else:
 
     # if update_id > json_message_update_id:
     #     json_message_update_id = update_id
