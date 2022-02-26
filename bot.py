@@ -10,28 +10,38 @@ import os
 die9 = 0
 die1 = 0
 
-json_message_update_id="5"
+json_message_update_id = "5"
 dyno_usage_reset()
 while True:
     init_time = time.time()
     ### for heroku ###
 
-    #are you alive functionality.
-    alive_function_update_url=f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-    alive_response=requests.get(alive_function_update_url)
+    # are you alive functionality.
+    alive_function_update_url = (
+        f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
+    )
+    alive_response = requests.get(alive_function_update_url)
 
-    update_id = alive_response["result"][len(response["result"]) - 1]["update_id"]
-    message_id = alive_response["result"][len(response["result"]) - 1]["message"]["message_id"]
-    conversation_text = alive_response["result"][len(response["result"]) - 1]["message"]["chat"]["text"]
-    mentioned_me = alive_response["result"][len(response["result"]) - 1]["message"]["entities"][0]["type"]
-    if update_id>json_message_update_id:
-        json_message_update_id=update_id
-        if ("alive" in conversation_text or "working" in conversation_text) and (mentioned_me=="mention"):
-            #mentioned the bot to check availability of bot
+    update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
+    message_id = alive_response["result"][len(alive_response["result"]) - 1]["message"][
+        "message_id"
+    ]
+    conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
+        "message"
+    ]["chat"]["text"]
+    mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
+        "message"
+    ]["entities"][0]["type"]
+    if update_id > json_message_update_id:
+        json_message_update_id = update_id
+        if ("alive" in conversation_text or "working" in conversation_text) and (
+            mentioned_me == "mention"
+        ):
+            # mentioned the bot to check availability of bot
             alive_reply = "Yeah!"
             requests.get(
-                        f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
-                    )
+                f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
+            )
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
