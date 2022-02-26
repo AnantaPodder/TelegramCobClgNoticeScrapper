@@ -50,6 +50,7 @@ while True:
             # print("not mentioned")
             continue
         finally:
+            continue
             # print("working")
 
     # if update_id > json_message_update_id:
