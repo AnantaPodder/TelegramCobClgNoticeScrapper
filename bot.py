@@ -96,7 +96,7 @@ while True:
     final_time = time.time()
     time_taken = final_time - init_time
     dyno_usage_response = dyno_usage_setter(time_taken)
-    
+
     if dyno_usage_response == -1:
         # dyno 440 hours used kindly chnage it.
         txt = f"@anantapodder I'll die if you don't change dyno within next 9 hours."
