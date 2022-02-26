@@ -22,31 +22,44 @@ while True:
     )
     alive_response = requests.get(alive_function_update_url).json()
 
-    update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
-    message_id = alive_response["result"][len(alive_response["result"]) - 1]["message"][
-        "message_id"
-    ]
-    conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
-        "message"
-    ]["text"]
     try:
+        update_id = alive_response["result"][len(alive_response["result"]) - 1][
+            "update_id"
+        ]
+        message_id = alive_response["result"][len(alive_response["result"]) - 1][
+            "message"
+        ]["message_id"]
+        conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
+            "message"
+        ]["text"]
         mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
             "message"
         ]["entities"][0]["type"]
+
+        if update_id > json_message_update_id:
+            json_message_update_id = update_id
+            if ("alive" in conversation_text or "working" in conversation_text) and (
+                mentioned_me == "mention"
+            ):
+                # mentioned the bot to check availability of bot
+                alive_reply = "Yeah!"
+                requests.get(
+                    f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
+                )
     except:
         # print("not mentioned")
         continue
 
-    if update_id > json_message_update_id:
-        json_message_update_id = update_id
-        if ("alive" in conversation_text or "working" in conversation_text) and (
-            mentioned_me == "mention"
-        ):
-            # mentioned the bot to check availability of bot
-            alive_reply = "Yeah!"
-            requests.get(
-                f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
-            )
+    # if update_id > json_message_update_id:
+    #     json_message_update_id = update_id
+    #     if ("alive" in conversation_text or "working" in conversation_text) and (
+    #         mentioned_me == "mention"
+    #     ):
+    #         # mentioned the bot to check availability of bot
+    #         alive_reply = "Yeah!"
+    #         requests.get(
+    #             f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
+    #         )
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
