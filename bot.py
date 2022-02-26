@@ -3,10 +3,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 import requests
-from config import telegram_bot_api
+from config import *
 import os
 
-chat_id = -1001381972668
+# chat_id = -1001381972668
 
 dyno_usage_reset()
 while True:
@@ -70,8 +70,6 @@ while True:
 
                 # print(title)
                 # time.sleep(1)
-
-                
 
                 driver.refresh()
                 print(k, ": ", title)
