@@ -10,7 +10,7 @@ import os
 die9 = 0
 die1 = 0
 
-json_message_update_id = "5"
+json_message_update_id = 5
 dyno_usage_reset()
 while True:
     init_time = time.time()
