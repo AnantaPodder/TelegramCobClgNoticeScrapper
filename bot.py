@@ -26,15 +26,15 @@ while True:
     message_id = alive_response["result"][len(alive_response["result"]) - 1]["message"][
         "message_id"
     ]
-    t = alive_response["result"][len(alive_response["result"]) - 1]["message"]["chat"][
-        "text"
-    ]
+    conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
+        "message"
+    ]["text"]
     mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
         "message"
     ]["entities"][0]["type"]
     if update_id > json_message_update_id:
         json_message_update_id = update_id
-        if ("alive" in t or "working" in t) and (
+        if ("alive" in conversation_text or "working" in conversation_text) and (
             mentioned_me == "mention"
         ):
             # mentioned the bot to check availability of bot
