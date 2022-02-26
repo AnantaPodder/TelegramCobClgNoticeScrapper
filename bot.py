@@ -6,8 +6,9 @@ import requests
 from config import telegram_bot_api
 import os
 
+dyno_usage_reset()
 while True:
-    print(time.time())
+    init_time = time.time()
     ### for heroku ###
 
     chrome_options = webdriver.ChromeOptions()
@@ -92,6 +93,21 @@ while True:
     x = ""
     driver.quit()
     time.sleep(5)
-    print(time.time())
+    final_time = time.time()
+    time_taken = final_time - init_time
+    dyno_usage_response = dyno_usage_setter(time_taken)
+    
+    if dyno_usage_response == -1:
+        # dyno 440 hours used kindly chnage it.
+        txt = f"@anantapodder I'll die if you don't change dyno within next 9 hours."
+        requests.get(
+            f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
+        )
+    elif dyno_usage_response == -2:
+        # dyno 449 hours used kindly chnage it.
+        txt = f"@anantapodder I'll die if you don't change dyno within next 59 minutes."
+        requests.get(
+            f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
+        )
 
 print("Exiting")
