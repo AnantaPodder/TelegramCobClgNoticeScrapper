@@ -34,7 +34,8 @@ while True:
             "message"
         ]["entities"][0]["type"]
     except:
-        print("not mentioned")
+        # print("not mentioned")
+        continue
 
     if update_id > json_message_update_id:
         json_message_update_id = update_id
