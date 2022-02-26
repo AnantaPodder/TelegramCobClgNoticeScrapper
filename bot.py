@@ -20,7 +20,7 @@ while True:
     alive_function_update_url = (
         f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
     )
-    alive_response = requests.get(alive_function_update_url)
+    alive_response = requests.get(alive_function_update_url).json()
 
     update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
     message_id = alive_response["result"][len(alive_response["result"]) - 1]["message"][
