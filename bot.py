@@ -29,9 +29,13 @@ while True:
     conversation_text = alive_response["result"][len(alive_response["result"]) - 1][
         "message"
     ]["text"]
-    mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
-        "message"
-    ]["entities"][0]["type"]
+    try:
+        mentioned_me = alive_response["result"][len(alive_response["result"]) - 1][
+            "message"
+        ]["entities"][0]["type"]
+    except:
+        print("not mentioned")
+
     if update_id > json_message_update_id:
         json_message_update_id = update_id
         if ("alive" in conversation_text or "working" in conversation_text) and (
