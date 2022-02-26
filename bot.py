@@ -7,7 +7,8 @@ from config import *
 import os
 
 # chat_id = -1001381972668
-
+die9 = 0
+die1 = 0
 dyno_usage_reset()
 while True:
     init_time = time.time()
@@ -97,17 +98,19 @@ while True:
     time_taken = final_time - init_time
     dyno_usage_response = dyno_usage_setter(time_taken)
 
-    if dyno_usage_response == -1:
+    if dyno_usage_response == -1 and die9 == 0:
         # dyno 440 hours used kindly chnage it.
         txt = f"@anantapodder I'll die if you don't change dyno within next 9 hours."
         requests.get(
             f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
         )
-    elif dyno_usage_response == -2:
+        die9 += 1
+    elif dyno_usage_response == -2 and die1 == 0:
         # dyno 449 hours used kindly chnage it.
         txt = f"@anantapodder I'll die if you don't change dyno within next 59 minutes."
         requests.get(
             f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
         )
+        die1 += 1
 
 print("Exiting")
