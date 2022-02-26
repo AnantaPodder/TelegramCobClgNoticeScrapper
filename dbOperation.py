@@ -83,13 +83,16 @@ def dyno_usage_reset():
         password=password,
         database=database,
     )
-
+    # cmd
     with connection.cursor() as cursor:
 
         if DynoSL == 1:
             cmd = f"UPDATE `dynoHourCounter` SET `dynosTime`= '0' WHERE `DynoSL`='2';"
         elif DynoSL == 2:
             cmd = f"UPDATE `dynoHourCounter` SET `dynosTime`= '0' WHERE `DynoSL`='1';"
+        else:
+            cmd = f"UPDATE `dynoHourCounter` SET `dynosTime`= '0' WHERE `DynoSL`='8';"
+            print("error")
         cursor.execute(cmd)
 
     connection.commit()
