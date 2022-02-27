@@ -10,7 +10,7 @@ import os
 die9 = 0
 die1 = 0
 
- alive_function_update_url = (
+alive_function_update_url = (
         f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
     )
 alive_response = requests.get(alive_function_update_url).json()
