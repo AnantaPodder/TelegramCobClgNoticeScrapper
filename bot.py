@@ -10,7 +10,13 @@ import os
 die9 = 0
 die1 = 0
 
-json_message_update_id = 5
+ alive_function_update_url = (
+        f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
+    )
+alive_response = requests.get(alive_function_update_url).json()
+
+json_message_update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
+
 dyno_usage_reset()
 while True:
     init_time = time.time()
