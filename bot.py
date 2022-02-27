@@ -82,7 +82,7 @@ while True:
 
     driver = webdriver.Chrome("./chromedriver")
 
-    driver.implicitly_wait(5)
+#     driver.implicitly_wait(5)
     driver.set_page_load_timeout(20)
 
     driver.get("http://coochbeharcollege.org.in/notice.aspx")
@@ -145,7 +145,7 @@ while True:
             else:
                 continue
 
-    print("I'm alive! will update you in next 5 seconds.")
+    print("I'm alive! will update you in next 1 seconds.")
     x = ""
     driver.quit()
     # time.sleep(5)
