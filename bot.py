@@ -145,7 +145,7 @@ while True:
             else:
                 continue
 
-    print("I'm alive! will update you in next 1 seconds.")
+#     print("I'm alive! will update you in next 1 seconds.")
     x = ""
     driver.quit()
     # time.sleep(5)
