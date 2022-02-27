@@ -10,12 +10,12 @@ import os
 die9 = 0
 die1 = 0
 
-alive_function_update_url = (
+first_update_url = (
         f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
     )
-alive_response = requests.get(alive_function_update_url).json()
+first_update = requests.get(first_update_url).json()
 
-json_message_update_id = alive_response["result"][len(alive_response["result"]) - 1]["update_id"]
+json_message_update_id = first_update["result"][len(first_update["result"]) - 1]["update_id"]
 
 dyno_usage_reset()
 while True:
@@ -82,7 +82,7 @@ while True:
 
     driver = webdriver.Chrome("./chromedriver")
 
-#     driver.implicitly_wait(5)
+    driver.implicitly_wait(5)
     driver.set_page_load_timeout(20)
 
     driver.get("http://coochbeharcollege.org.in/notice.aspx")
@@ -145,7 +145,7 @@ while True:
             else:
                 continue
 
-#     print("I'm alive! will update you in next 1 seconds.")
+    print("I'm alive! will update you in next 5 seconds.")
     x = ""
     driver.quit()
     # time.sleep(5)
