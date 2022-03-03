@@ -10,12 +10,12 @@ import os
 die9 = 0
 die1 = 0
 
-first_update_url = (
-        f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-    )
+first_update_url = f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
 first_update = requests.get(first_update_url).json()
 
-json_message_update_id = first_update["result"][len(first_update["result"]) - 1]["update_id"]
+json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
+    "update_id"
+]
 
 dyno_usage_reset()
 while True:
@@ -48,7 +48,7 @@ while True:
                 mentioned_me == "mention"
             ):
                 # mentioned the bot to check availability of bot
-                alive_reply = "Yeah!"
+                alive_reply = f"Yeah! for {dyno_usage_hour}"
                 requests.get(
                     f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
                 )
@@ -131,7 +131,7 @@ while True:
                 print(k, ": ", title)
                 k += 1
                 url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id={chat_id}&caption={capt}&document={title}"
-#                 print(url)
+                #                 print(url)
                 time.sleep(1)
                 response = requests.get(url)
                 if response.status_code == 400:
@@ -151,7 +151,7 @@ while True:
     # time.sleep(5)
     final_time = time.time()
     time_taken = final_time - init_time
-    dyno_usage_response = dyno_usage_setter(time_taken)
+    dyno_usage_response, dyno_usage_hour = dyno_usage_setter(time_taken)
 
     if dyno_usage_response == -1 and die9 == 0:
         # dyno 440 hours used kindly chnage it.

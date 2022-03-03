@@ -48,14 +48,14 @@ def dyno_usage_setter(time_to_add):
         password=password,
         database=database,
     )
-
+    dynoHour = 0
     with connection.cursor() as cursor:
         a = 10
         cursor.execute(
             f"SELECT `dynosTime` from `dynoHourCounter` WHERE `DynoSL`='{DynoSL}';"
         )
         dynoSeconds = cursor.fetchone()[0]
-
+        dynoHour = dynoSeconds / 3600
         if dynoSeconds > 1944000:
             a = -1
             # more than 440 dyno hours used
@@ -71,7 +71,7 @@ def dyno_usage_setter(time_to_add):
 
     connection.commit()
     connection.close()
-    return a
+    return a, dynoHour
 
 
 # put value of usage for opposite dyno zero
