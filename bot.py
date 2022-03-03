@@ -48,7 +48,7 @@ while True:
                 mentioned_me == "mention"
             ):
                 # mentioned the bot to check availability of bot
-                alive_reply = f"Yeah! for {dyno_usage_hour}"
+                alive_reply = f"Yeah! Up for {round(dyno_usage_hour,3)} Hours"
                 requests.get(
                     f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
                 )
