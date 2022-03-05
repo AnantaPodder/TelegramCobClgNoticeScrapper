@@ -135,7 +135,7 @@ while True:
                 time.sleep(1)
                 response = requests.get(url)
                 if response.status_code == 400:
-                    txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: https://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
+                    txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: http://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
                     requests.get(
                         f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
                     )
