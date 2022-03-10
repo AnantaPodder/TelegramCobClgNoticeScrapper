@@ -12,10 +12,13 @@ die1 = 0
 
 first_update_url = f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
 first_update = requests.get(first_update_url).json()
-
-json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
-    "update_id"
-]
+if len(first_update["result"]) == 0:
+    # no updates in last 24 hours
+    print("no updates in last 24 hrs")
+else:
+    json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
+        "update_id"
+    ]
 
 dyno_usage_reset()
 while True:
