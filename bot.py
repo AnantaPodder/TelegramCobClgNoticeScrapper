@@ -19,6 +19,7 @@ else:
     json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
         "update_id"
     ]
+    print(json_message_update_id)
 
 dyno_usage_reset()
 while True:
@@ -34,12 +35,12 @@ while True:
     except:
         print("telegram getUpdate error from telegram server. ")
 
-        if len(alive_response == 0):
-            print("no new updates from users in last 24 hours")
-        else:
-            update_id = alive_response["result"][len(alive_response["result"]) - 1][
-                "update_id"
-            ]
+    if len(alive_response["result"]) == 0:
+        print("no new updates from users in last 24 hours")
+    else:
+        update_id = alive_response["result"][len(alive_response["result"]) - 1][
+            "update_id"
+        ]
         if update_id > json_message_update_id:
 
             try:
