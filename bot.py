@@ -19,7 +19,6 @@ else:
     json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
         "update_id"
     ]
-    print(json_message_update_id)
 
 dyno_usage_reset()
 while True:
