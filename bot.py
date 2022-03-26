@@ -1,182 +1,128 @@
+import multiprocessing
 from dbOperation import *
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
-import requests
 from config import *
 import os
+from telegram.ext import Updater, Dispatcher, CommandHandler, CallbackContext
+from telegram import Update
 
-# chat_id = -1001381972668
-die9 = 0
-die1 = 0
+class Telegram_Bot:
+    def __init__(self):
+        self.telegram_updater=Updater(telegram_bot_api,use_context=True)
+        self.telegram_dispatcher=self.telegram_updater.dispatcher
+        # chat_id = -1001381972668
+        self.dyno_usage_response, self.dyno_usage_hour = dyno_usage_setter(3)
 
-first_update_url = f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-first_update = requests.get(first_update_url).json()
-if len(first_update["result"]) == 0:
-    # no updates in last 24 hours
-    print("no updates in last 24 hrs")
-else:
-    json_message_update_id = first_update["result"][len(first_update["result"]) - 1][
-        "update_id"
-    ]
+        dyno_usage_reset()
 
-dyno_usage_reset()
-while True:
-    init_time = time.time()
-    ### for heroku ###
-
-    # are you alive functionality.
-    try:
-        alive_function_update_url = (
-            f"https://api.telegram.org/bot{telegram_bot_api}/getUpdates"
-        )
-        alive_response = requests.get(alive_function_update_url).json()
-    except:
-        print("telegram getUpdate error from telegram server. ")
-
-    if len(alive_response["result"]) == 0:
-        print("no new updates from users in last 24 hours")
-    else:
-        update_id = alive_response["result"][len(alive_response["result"]) - 1][
-            "update_id"
-        ]
-        if update_id > json_message_update_id:
-
+    def status(self,update:Update,context:CallbackContext):
+        
+        if update.effective_chat.id==chat_id and update.effective_message.text=="/status" and update.effective_message.entities[0].type=="bot_command":
             try:
+                alive_reply = f"I'm Up for {round(self.dyno_usage_hour,3)} Hours"
+                context.bot.send_message(chat_id=update.effective_chat.id,text=alive_reply)
+            except Exception as e:
+                print(e.args,"at line 26")
 
-                message_id = alive_response["result"][
-                    len(alive_response["result"]) - 1
-                ]["message"]["message_id"]
-                conversation_text = alive_response["result"][
-                    len(alive_response["result"]) - 1
-                ]["message"]["text"]
-                mentioned_me = alive_response["result"][
-                    len(alive_response["result"]) - 1
-                ]["message"]["entities"][0]["type"]
+    def handler(self):
+        self.telegram_dispatcher.add_handler(CommandHandler("status",self.status))
+        self.telegram_updater.start_polling()
 
-                json_message_update_id = update_id
-                if (
-                    "alive" in conversation_text or "working" in conversation_text
-                ) and (mentioned_me == "mention"):
-                    # mentioned the bot to check availability of bot
-                    alive_reply = f"Yeah! Up for {round(dyno_usage_hour,3)} Hours"
-                    requests.get(
-                        f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
-                    )
+    def notification_scanner(self):
+        while True:
+            init_time = time.time()
 
-            except:
-                print("not mentioned")
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-dev-shm-usage")
+            chrome_options.add_argument("--no-sandbox")
+            driver = webdriver.Chrome(
+                executable_path=os.environ.get("CHROMEDRIVER_PATH"),
+                chrome_options=chrome_options,
+            )
+            #### for heroku ###
 
-        # else:
+            driver = webdriver.Chrome("./chromedriver")
 
-        # if update_id > json_message_update_id:
-        #     json_message_update_id = update_id
-        #     if ("alive" in conversation_text or "working" in conversation_text) and (
-        #         mentioned_me == "mention"
-        #     ):
-        #         # mentioned the bot to check availability of bot
-        #         alive_reply = "Yeah!"
-        #         requests.get(
-        #             f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
-        #         )
+            driver.implicitly_wait(5)
+            driver.set_page_load_timeout(20)
 
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--no-sandbox")
-    driver = webdriver.Chrome(
-        executable_path=os.environ.get("CHROMEDRIVER_PATH"),
-        chrome_options=chrome_options,
-    )
-    #### for heroku ###
+            driver.get("http://coochbeharcollege.org.in/notice.aspx")
+            x = driver.page_source  # page source code to process.
 
-    driver = webdriver.Chrome("./chromedriver")
+            dbData = getter()  # get data from database
 
-    driver.implicitly_wait(5)
-    driver.set_page_load_timeout(20)
+            x = x[x.find("<table>") : x.find("</table>")]  # get full table
+            temp = ""
+            k = 1
+            for i in range(len(x)):
+                if x.startswith("popuplink", i):
+                    # print(x[i : i + 13])
+                    j = i
+                    temp = x[j : j + 13]
 
-    driver.get("http://coochbeharcollege.org.in/notice.aspx")
-    x = driver.page_source  # page source code to process.
+                    if dbData.count(temp) == 0:
+                        # print("do operation")
+                        # for caption
+                        capt = driver.find_element(By.ID, temp).text
+                        # document.getElementById("popuplink4116").text
+                        # print(capt)
 
-    dbData = getter()  # get data from database
+                        driver.find_element(By.ID, temp).click()
+                        # time.sleep(2)
+                        ele = driver.find_element_by_class_name("bd").get_attribute("outerHTML")
+                        url_base_index = ele.index(
+                            'onclick="JavaScript:view(this.title)" title="'
+                        )
+                        url_end_index = ele.index(">View</a>")
 
-    x = x[x.find("<table>") : x.find("</table>")]  # get full table
-    temp = ""
-    k = 1
-    for i in range(len(x)):
-        if x.startswith("popuplink", i):
-            # print(x[i : i + 13])
-            j = i
-            temp = x[j : j + 13]
+                        title = ele[url_base_index + 45 : url_end_index - 1]
+                        # print(title)
+                        title = title.replace(" ", "%20")
+                        # print(title)
+                        title = "http://coochbeharcollege.org.in/UploadedFiles/" + title
+                        # if title.count("amp;") > 0:
+                        #     title = title.replace("amp;", "")
 
-            if dbData.count(temp) == 0:
-                # print("do operation")
-                # for caption
-                capt = driver.find_element(By.ID, temp).text
-                # document.getElementById("popuplink4116").text
-                # print(capt)
+                        ##### bug exists
 
-                driver.find_element(By.ID, temp).click()
-                # time.sleep(2)
-                ele = driver.find_element_by_class_name("bd").get_attribute("outerHTML")
-                url_base_index = ele.index(
-                    'onclick="JavaScript:view(this.title)" title="'
-                )
-                url_end_index = ele.index(">View</a>")
+                        # print(title)
+                        # time.sleep(1)
 
-                title = ele[url_base_index + 45 : url_end_index - 1]
-                # print(title)
-                title = title.replace(" ", "%20")
-                # print(title)
-                title = "http://coochbeharcollege.org.in/UploadedFiles/" + title
-                # if title.count("amp;") > 0:
-                #     title = title.replace("amp;", "")
+                        driver.refresh()
+                        print(k, ": ", title)
+                        k += 1
+                        send_status=self.telegram_updater.bot.send_document(chat_id=chat_id,caption=capt,document=title)
+                        # url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id={chat_id}&caption={capt}&document={title}"
+                        # #                 print(url)
+                        # time.sleep(1)
+                        # response = requests.get(url)
+                        if send_status == 400:
+                            txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: http://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
+                            self.telegram_updater.bot.send_message(chat_id=chat_id,text=txt)
+                            # requests.get(
+                            #     f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
+                            # )
 
-                ##### bug exists
+                        # insert into database
+                        setter(temp)
+                    else:
+                        continue
 
-                # print(title)
-                # time.sleep(1)
+            print("I'm alive! will update you in next 5 seconds.")
+            x = ""
+            driver.quit()
+            # time.sleep(5)
+            final_time = time.time()
+            time_taken = final_time - init_time
+            self.dyno_usage_response, self.dyno_usage_hour = dyno_usage_setter(time_taken)
+        
 
-                driver.refresh()
-                print(k, ": ", title)
-                k += 1
-                url = f"https://api.telegram.org/bot{telegram_bot_api}/sendDocument?chat_id={chat_id}&caption={capt}&document={title}"
-                #                 print(url)
-                time.sleep(1)
-                response = requests.get(url)
-                if response.status_code == 400:
-                    txt = f"New Notice available. Bot unable to download it. \n\nkindly visit: http://coochbeharcollege.org.in/notice.aspx  \n\nNotice title: {capt}"
-                    requests.get(
-                        f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
-                    )
+tg_bot=Telegram_Bot()
+# tg_bot.handler()
 
-                # insert into database
-                setter(temp)
-            else:
-                continue
-
-    print("I'm alive! will update you in next 5 seconds.")
-    x = ""
-    driver.quit()
-    # time.sleep(5)
-    final_time = time.time()
-    time_taken = final_time - init_time
-    dyno_usage_response, dyno_usage_hour = dyno_usage_setter(time_taken)
-
-    if dyno_usage_response == -1 and die9 == 0:
-        # dyno 440 hours used kindly chnage it.
-        txt = f"@anantapodder I'll die if you don't change dyno within next 9 hours."
-        requests.get(
-            f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
-        )
-        die9 += 1
-    elif dyno_usage_response == -2 and die1 == 0:
-        # dyno 449 hours used kindly chnage it.
-        txt = f"@anantapodder I'll die if you don't change dyno within next 59 minutes."
-        requests.get(
-            f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text={txt}"
-        )
-        die1 += 1
-
-print("Exiting")
+multiprocessing.Process(name="y",target=tg_bot.handler).start()
+multiprocessing.Process(name="x",target=tg_bot.notification_scanner).start()
