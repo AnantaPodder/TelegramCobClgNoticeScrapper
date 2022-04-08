@@ -27,20 +27,20 @@ dyno_usage_reset()
 while True:
     init_time = time.time()
     ### for heroku ###
-    today=str(date.today())[8:]
+    # today=str(date.today())[8:]
 
-    if today=="20" and notified_dyno==False:
-        send_message_url=f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text=@anantapodder change dyno in heroku otherwise bot will stop."
-        status=requests.get(send_message_url)
-        if(status.status_code==200):
-            notified_dyno=True
-        else:
-            #error triggered while sending message to telegram client.
-            pass
+    # if today=="20" and notified_dyno==False:
+    #     send_message_url=f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text=@anantapodder change dyno in heroku otherwise bot will stop."
+    #     status=requests.get(send_message_url)
+    #     if(status.status_code==200):
+    #         notified_dyno=True
+    #     else:
+    #         #error triggered while sending message to telegram client.
+    #         pass
         
-    else:
+    # else:
         
-        pass
+    #     pass
     # are you alive functionality.
     try:
         alive_function_update_url = (
