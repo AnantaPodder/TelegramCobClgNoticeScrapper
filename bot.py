@@ -5,6 +5,9 @@ import time
 import requests
 from config import *
 import os
+from datetime import date
+
+notified_dyno=False
 
 # chat_id = -1001381972668
 die9 = 0
@@ -24,7 +27,20 @@ dyno_usage_reset()
 while True:
     init_time = time.time()
     ### for heroku ###
+    today=str(date.today())[8:]
 
+    if today=="20" and notified_dyno==False:
+        send_message_url=f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&text=@anantapodder change dyno in heroku otherwise bot will stop."
+        status=requests.get(send_message_url)
+        if(status.status_code==200):
+            notified_dyno=True
+        else:
+            #error triggered while sending message to telegram client.
+            pass
+        
+    else:
+        
+        pass
     # are you alive functionality.
     try:
         alive_function_update_url = (
@@ -67,18 +83,7 @@ while True:
             except:
                 print("not mentioned")
 
-        # else:
 
-        # if update_id > json_message_update_id:
-        #     json_message_update_id = update_id
-        #     if ("alive" in conversation_text or "working" in conversation_text) and (
-        #         mentioned_me == "mention"
-        #     ):
-        #         # mentioned the bot to check availability of bot
-        #         alive_reply = "Yeah!"
-        #         requests.get(
-        #             f"https://api.telegram.org/bot{telegram_bot_api}/sendMessage?chat_id={chat_id}&reply_to_message_id={message_id}&text={alive_reply}"
-        #         )
 
     chrome_options = webdriver.ChromeOptions()
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
